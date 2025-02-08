@@ -2,10 +2,12 @@ package unioeste.geral.receitamedica.dao;
 
 import unioeste.apoio.bd.ConexaoBD;
 import unioeste.geral.pessoa.bo.email.Email;
+import unioeste.geral.receitamedica.bo.paciente.Paciente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,4 +35,17 @@ public class EmailPacienteDAO {
 
         return emails;
     }
+
+    public static void insertEmails(Paciente paciente, Connection conexao) throws SQLException {
+        String sql = "INSERT INTO email_paciente (email_paciente, id_paciente) VALUES (?, ?)";
+
+        try (PreparedStatement cmd = conexao.prepareStatement(sql)) {
+            for (Email email : paciente.getEmails()) {
+                cmd.setString(1, email.getEmail());
+                cmd.setLong(2, paciente.getId());
+                cmd.executeUpdate();
+            }
+        }
+    }
+
 }

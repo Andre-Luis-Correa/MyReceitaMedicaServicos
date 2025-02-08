@@ -6,6 +6,8 @@ import unioeste.geral.pessoa.bo.ddd.DDD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DDDDao {
 
@@ -27,5 +29,26 @@ public class DDDDao {
         }
 
         return null;
+    }
+
+    public static List<DDD> selecionarTodosDDD() throws Exception {
+        List<DDD> dddList = new ArrayList<>();
+        String sql = "SELECT * FROM ddd;";
+
+        try (Connection conn = new ConexaoBD().getConexaoComBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                DDD ddd = new DDD(rs.getInt("numero_ddd"));
+                dddList.add(ddd);
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Erro ao buscar DDDs", e);
+        }
+
+        return dddList;
     }
 }

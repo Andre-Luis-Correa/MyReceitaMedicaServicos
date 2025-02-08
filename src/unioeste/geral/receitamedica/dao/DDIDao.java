@@ -6,6 +6,8 @@ import unioeste.geral.pessoa.bo.ddi.DDI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DDIDao {
     public static DDI selectDDIPorNumero(Integer numero) throws Exception {
@@ -26,5 +28,26 @@ public class DDIDao {
         }
 
         return null;
+    }
+
+    public static List<DDI> selecionarTodosDDI() throws Exception {
+        List<DDI> ddiList = new ArrayList<>();
+        String sql = "SELECT * FROM ddi;";
+
+        try (Connection conn = new ConexaoBD().getConexaoComBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                DDI ddi = new DDI(rs.getInt("numero_ddi"));
+                ddiList.add(ddi);
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Erro ao buscar DDIs", e);
+        }
+
+        return ddiList;
     }
 }
