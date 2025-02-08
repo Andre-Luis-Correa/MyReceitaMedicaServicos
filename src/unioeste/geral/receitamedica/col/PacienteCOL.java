@@ -1,6 +1,5 @@
 package unioeste.geral.receitamedica.col;
 
-import unioeste.geral.endereco.dao.EnderecoDAO;
 import unioeste.geral.receitamedica.bo.paciente.Paciente;
 import unioeste.geral.receitamedica.dao.PacienteDAO;
 
@@ -10,8 +9,16 @@ public class PacienteCOL {
         return id != null && id > 0;
     }
 
-    public static boolean pacienteValido(Paciente paciente) {
-        return paciente != null;
+    public static boolean pacienteValido(Paciente paciente) throws Exception {
+        return paciente != null &&
+                paciente.getNome() != null &&
+                !paciente.getNome().trim().isEmpty() &&
+                EnderecoEspecificoCOL.enderecoEspecificoValido(paciente.getEnderecoEspecifico()) &&
+                TelefoneCol.telefonesValidos(paciente.getTelefones()) &&
+                EmailCOL.emailValidos(paciente.getEmails()) &&
+                SexoCOL.sexoValido(paciente.getSexo()) &&
+                SexoCOL.sexoExiste(paciente.getSexo()) &&
+                CPFCOL.cpfValido(paciente.getCpf());
     }
 
     public static boolean pacienteExiste(Paciente paciente) throws Exception {

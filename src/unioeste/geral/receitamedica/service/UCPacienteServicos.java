@@ -108,7 +108,7 @@ public class UCPacienteServicos {
         pacienteNovo.setTelefones(new ArrayList<>());
 
         // Adicionando Email e Telefone
-        pacienteNovo.getEmails().add(new Email("joaoTesteInserção@email.com"));
+        pacienteNovo.getEmails().add(new Email("joaoTesteInsercao@email.com"));
         pacienteNovo.getTelefones().add(new Telefone("991456211", ServicosUteisGeral.obterTodosDDD().get(0), ServicosUteisGeral.obterTodosDDI().get(0)));
 
         // Cadastrando o paciente
