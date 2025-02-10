@@ -20,16 +20,14 @@ public class UCPacienteServicos {
 
     }
 
-    public static void cadastrarPaciente(Paciente paciente) throws Exception {
+    public static Paciente cadastrarPaciente(Paciente paciente) throws Exception {
         if (!PacienteCOL.pacienteValido(paciente)) {
             throw new ReceitaMedicaException("Paciente inválido");
         } else if (PacienteCOL.pacienteExiste(paciente)) {
             throw new ReceitaMedicaException("Paciente já cadastrado");
-        } else {
-            PacienteDAO.insertPaciente(paciente);
-            System.out.println("Paciente cadastrado");
         }
 
+        return PacienteDAO.insertPaciente(paciente);
     }
 
     public static Paciente consultarPaciente(Long id) throws Exception {
@@ -101,15 +99,15 @@ public class UCPacienteServicos {
         // Criando um paciente para cadastrar
         Paciente pacienteNovo = new Paciente();
         pacienteNovo.setNome("João da Silva");
-        pacienteNovo.setCpf(new CPF("13037025922"));
+        pacienteNovo.setCpf(new CPF("13037025882"));
         pacienteNovo.setSexo(new Sexo("M", "Masculino"));
         pacienteNovo.setEnderecoEspecifico(new EnderecoEspecifico("numero", "complemento", endereco));
         pacienteNovo.setEmails(new ArrayList<>());
         pacienteNovo.setTelefones(new ArrayList<>());
 
         // Adicionando Email e Telefone
-        pacienteNovo.getEmails().add(new Email("joaoTesteInsercao@email.com"));
-        pacienteNovo.getTelefones().add(new Telefone("991456211", ServicosUteisGeral.obterTodosDDD().get(0), ServicosUteisGeral.obterTodosDDI().get(0)));
+        pacienteNovo.getEmails().add(new Email("testiii@email.com"));
+        pacienteNovo.getTelefones().add(new Telefone("991756211", ServicosUteisGeral.obterTodosDDD().get(0), ServicosUteisGeral.obterTodosDDI().get(0)));
 
         // Cadastrando o paciente
         cadastrarPaciente(pacienteNovo);

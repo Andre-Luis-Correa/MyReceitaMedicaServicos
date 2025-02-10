@@ -72,7 +72,7 @@ public class PacienteDAO {
         return null;
     }
 
-    public static void insertPaciente(Paciente paciente) throws Exception {
+    public static Paciente insertPaciente(Paciente paciente) throws Exception {
         String sql = "INSERT INTO paciente(nome_paciente, cpf_paciente, id_endereco, complemento_endereco, numero_endereco, sigla_sexo) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection conexao = null;
@@ -81,7 +81,7 @@ public class PacienteDAO {
 
         try {
             conexao = new ConexaoBD().getConexaoComBD();
-            conexao.setAutoCommit(false); // Inicia a transação
+            conexao.setAutoCommit(false);
 
             cmd = conexao.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
@@ -98,13 +98,11 @@ public class PacienteDAO {
                 throw new SQLException("Falha ao inserir paciente, nenhum registro foi adicionado.");
             }
 
-            // Recuperando o ID gerado para o paciente
             generatedKeys = cmd.getGeneratedKeys();
             if (generatedKeys.next()) {
                 long idPaciente = generatedKeys.getLong(1);
                 paciente.setId(idPaciente);
 
-                // Inserindo e-mails e telefones após obter o ID do paciente
                 EmailPacienteDAO.insertEmails(paciente, conexao);
                 TelefonePacienteDAO.insertTelefones(paciente, conexao);
 
@@ -117,7 +115,7 @@ public class PacienteDAO {
         } catch (SQLException e) {
             if (conexao != null) {
                 try {
-                    conexao.rollback(); // Desfaz todas as operações caso ocorra erro
+                    conexao.rollback();
                     System.err.println("Transação revertida devido a erro: " + e.getMessage());
                 } catch (SQLException rollbackEx) {
                     throw new Exception("Erro ao reverter transação: " + rollbackEx.getMessage(), rollbackEx);
@@ -129,11 +127,12 @@ public class PacienteDAO {
             try {
                 if (generatedKeys != null) generatedKeys.close();
                 if (cmd != null) cmd.close();
-                if (conexao != null) conexao.setAutoCommit(true); // Restaura o comportamento padrão
+                if (conexao != null) conexao.setAutoCommit(true);
                 if (conexao != null) conexao.close();
             } catch (SQLException e) {
                 System.err.println("Erro ao fechar recursos: " + e.getMessage());
             }
         }
+        return paciente;
     }
 }
