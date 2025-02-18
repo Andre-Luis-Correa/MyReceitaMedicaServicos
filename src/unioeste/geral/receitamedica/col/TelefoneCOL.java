@@ -4,7 +4,7 @@ import unioeste.geral.pessoa.bo.telefone.Telefone;
 
 import java.util.List;
 
-public class TelefoneCol {
+public class TelefoneCOL {
 
     private static boolean numeroValido(String numero) {
         return numero != null && !numero.trim().isEmpty() && numero.length() <= 15;

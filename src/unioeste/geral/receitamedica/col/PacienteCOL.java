@@ -14,7 +14,7 @@ public class PacienteCOL {
                 paciente.getNome() != null &&
                 !paciente.getNome().trim().isEmpty() &&
                 EnderecoEspecificoCOL.enderecoEspecificoValido(paciente.getEnderecoEspecifico()) &&
-                TelefoneCol.telefonesValidos(paciente.getTelefones()) &&
+                TelefoneCOL.telefonesValidos(paciente.getTelefones()) &&
                 EmailCOL.emailValidos(paciente.getEmails()) &&
                 SexoCOL.sexoValido(paciente.getSexo()) &&
                 SexoCOL.sexoExiste(paciente.getSexo()) &&

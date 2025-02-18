@@ -6,6 +6,8 @@ import unioeste.geral.pessoa.bo.sexo.Sexo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SexoDAO {
 
@@ -26,5 +28,26 @@ public class SexoDAO {
         }
 
         return null;
+    }
+
+    public static List<Sexo> selecionarTodosSexo() throws Exception {
+        List<Sexo> sexoList = new ArrayList<>();
+        String sql = "SELECT * FROM sexo;";
+
+        try (Connection conn = new ConexaoBD().getConexaoComBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Sexo sexo = new Sexo(rs.getString("sigla_sexo"), rs.getString("nome"));
+                sexoList.add(sexo);
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Erro ao buscar Sexos", e);
+        }
+
+        return sexoList;
     }
 }
