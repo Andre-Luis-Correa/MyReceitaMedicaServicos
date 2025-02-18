@@ -7,6 +7,7 @@ import unioeste.geral.pessoa.bo.cpf.CPF;
 import unioeste.geral.pessoa.bo.email.Email;
 import unioeste.geral.pessoa.bo.sexo.Sexo;
 import unioeste.geral.pessoa.bo.telefone.Telefone;
+import unioeste.geral.pessoa.service.ServicosPessoasGerais;
 import unioeste.geral.receitamedica.bo.paciente.Paciente;
 import unioeste.geral.receitamedica.col.PacienteCOL;
 import unioeste.geral.receitamedica.dao.PacienteDAO;
@@ -99,15 +100,15 @@ public class UCPacienteServicos {
         // Criando um paciente para cadastrar
         Paciente pacienteNovo = new Paciente();
         pacienteNovo.setNome("João da Silva");
-        pacienteNovo.setCpf(new CPF("13037025882"));
+        pacienteNovo.setCpf(new CPF("13037012699"));
         pacienteNovo.setSexo(new Sexo("M", "Masculino"));
         pacienteNovo.setEnderecoEspecifico(new EnderecoEspecifico("numero", "complemento", endereco));
         pacienteNovo.setEmails(new ArrayList<>());
         pacienteNovo.setTelefones(new ArrayList<>());
 
         // Adicionando Email e Telefone
-        pacienteNovo.getEmails().add(new Email("testiii@email.com"));
-        pacienteNovo.getTelefones().add(new Telefone("991756211", ServicosUteisGeral.obterTodosDDD().get(0), ServicosUteisGeral.obterTodosDDI().get(0)));
+        pacienteNovo.getEmails().add(new Email("testiiiuuuuuuuuuu@email.com"));
+        pacienteNovo.getTelefones().add(new Telefone("841766611", ServicosPessoasGerais.obterTodosDDD().get(0), ServicosPessoasGerais.obterTodosDDI().get(0)));
 
         // Cadastrando o paciente
         cadastrarPaciente(pacienteNovo);

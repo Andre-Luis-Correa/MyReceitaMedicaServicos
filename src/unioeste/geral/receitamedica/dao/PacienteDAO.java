@@ -7,6 +7,7 @@ import unioeste.geral.endereco.col.EnderecoCOL;
 import unioeste.geral.endereco.dao.EnderecoDAO;
 import unioeste.geral.endereco.service.UCEnderecoGeralServicos;
 import unioeste.geral.pessoa.bo.cpf.CPF;
+import unioeste.geral.pessoa.dao.SexoDAO;
 import unioeste.geral.receitamedica.bo.paciente.Paciente;
 
 import java.sql.Connection;

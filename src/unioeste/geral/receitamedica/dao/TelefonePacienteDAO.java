@@ -2,6 +2,8 @@ package unioeste.geral.receitamedica.dao;
 
 import unioeste.apoio.bd.ConexaoBD;
 import unioeste.geral.pessoa.bo.telefone.Telefone;
+import unioeste.geral.pessoa.dao.DDDDao;
+import unioeste.geral.pessoa.dao.DDIDao;
 import unioeste.geral.receitamedica.bo.paciente.Paciente;
 
 import java.sql.Connection;

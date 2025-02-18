@@ -1,5 +1,6 @@
 package unioeste.geral.receitamedica.col;
 
+import unioeste.geral.pessoa.col.*;
 import unioeste.geral.receitamedica.bo.paciente.Paciente;
 import unioeste.geral.receitamedica.dao.PacienteDAO;
 
