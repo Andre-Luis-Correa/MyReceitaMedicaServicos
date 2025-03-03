@@ -169,7 +169,7 @@ public class UCPacienteServicos {
 
             // Criando Endereço
             Endereco endereco = new Endereco();
-            endereco.setId(89L); // Supondo que já existe um endereço no banco
+            endereco.setId(2L); // Supondo que já existe um endereço no banco
 
             EnderecoEspecifico enderecoEspecifico = new EnderecoEspecifico("123", "Apto 101", endereco);
             paciente.setEnderecoEspecifico(enderecoEspecifico);
