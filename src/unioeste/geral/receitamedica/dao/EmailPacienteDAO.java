@@ -48,4 +48,55 @@ public class EmailPacienteDAO {
         }
     }
 
+    public Email selecionarEmailPacientePorEmail(String email, Connection conexao) throws SQLException {
+        String sql = "SELECT email_paciente FROM email_paciente WHERE email_paciente = ?";
+
+        try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
+            preparedStatement.setString(1, email);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Email email1 = new Email();
+                    email1.setEmail(resultSet.getString("email_paciente"));
+                    return email1;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void inserirEmailPaciente(Paciente paciente, List<Email> emails, Connection conexao) throws SQLException {
+        String sql = "INSERT INTO email_paciente (email_paciente, id_paciente) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
+            for (Email email : emails) {
+                preparedStatement.setString(1, email.getEmail());
+                preparedStatement.setLong(2, paciente.getId());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        }
+    }
+
+    public List<Email> selecionarEmailsPaciente(Long id, Connection conexao) throws Exception {
+        String sql = "SELECT ep.email_paciente " +
+                "FROM email_paciente ep " +
+                "WHERE ep.id_paciente = ?";
+
+        List<Email> emails = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Email email = new Email();
+                    email.setEmail(resultSet.getString("email_paciente"));
+                    emails.add(email);
+                }
+            }
+        }
+        return emails;
+    }
 }
