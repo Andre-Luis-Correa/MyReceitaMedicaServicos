@@ -64,7 +64,7 @@ public class UCPacienteServicos {
             conexao.setAutoCommit(false);
 
             if (!enderecoEspecificoCOL.enderecoEspecificoValido(paciente.getEnderecoEspecifico()) || enderecoDAO.selecionarEnderecoPorId(paciente.getEnderecoEspecifico().getEndereco().getId(), conexao) == null) {
-                throw new ReceitaMedicaException("Endereço específico inválido inválida.");
+                throw new ReceitaMedicaException("Endereço específico inválido ou endereço não existe.");
             }
 
             for (Telefone telefone : paciente.getTelefones()) {
@@ -77,7 +77,7 @@ public class UCPacienteServicos {
                     if (ddi == null) throw new ReceitaMedicaException("DDI não existe");
                     if (telefoneEncontrado != null) throw new ReceitaMedicaException("Telefone " + telefone.getDdi().getNumeroDDI() + " " + telefone.getDdd().getNumeroDDD() + " " + telefone.getNumero() + " já está sendo utilizado.");
                 } else {
-                    throw new ReceitaMedicaException("Telefone inválidoo " + telefone.getDdi().getNumeroDDI() + " " + telefone.getDdd().getNumeroDDD() + " " + telefone.getNumero());
+                    throw new ReceitaMedicaException("Telefone inválido " + telefone.getDdi().getNumeroDDI() + " " + telefone.getDdd().getNumeroDDD() + " " + telefone.getNumero());
                 }
             }
 
@@ -92,7 +92,7 @@ public class UCPacienteServicos {
             }
 
             if (!sexoCOL.sexoValido(paciente.getSexo()) || sexoDAO.selecionarSexoPorSigla(paciente.getSexo().getSigla(), conexao) == null) {
-                throw new ReceitaMedicaException("Sexo inválido");
+                throw new ReceitaMedicaException("Sexo inválido ou não existe.");
             }
 
             if(!cpfCol.cpfValido(paciente.getCpf()) || pacienteDAO.selecionarPacientePorCPF(paciente.getCpf().getCpf(), conexao) != null) {
