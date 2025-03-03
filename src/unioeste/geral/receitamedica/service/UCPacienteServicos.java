@@ -169,7 +169,7 @@ public class UCPacienteServicos {
 
             // Criando Endereço
             Endereco endereco = new Endereco();
-            endereco.setId(1L); // Supondo que já existe um endereço no banco
+            endereco.setId(89L); // Supondo que já existe um endereço no banco
 
             EnderecoEspecifico enderecoEspecifico = new EnderecoEspecifico("123", "Apto 101", endereco);
             paciente.setEnderecoEspecifico(enderecoEspecifico);
@@ -193,6 +193,7 @@ public class UCPacienteServicos {
 
             paciente.setTelefones(new ArrayList<>());
             paciente.getTelefones().add(telefone);
+            paciente.getTelefones().add(telefone1);
 
             // Criando Email
             Email email = new Email();
