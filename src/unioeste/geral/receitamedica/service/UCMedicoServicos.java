@@ -17,7 +17,6 @@ import unioeste.geral.pessoa.dao.DDIDao;
 import unioeste.geral.pessoa.dao.SexoDAO;
 import unioeste.geral.receitamedica.bo.crm.CRM;
 import unioeste.geral.receitamedica.bo.medico.Medico;
-import unioeste.geral.receitamedica.bo.paciente.Paciente;
 import unioeste.geral.receitamedica.col.CrmCOL;
 import unioeste.geral.receitamedica.col.MedicoCOL;
 import unioeste.geral.receitamedica.dao.EmailMedicoDAO;
@@ -128,7 +127,7 @@ public class UCMedicoServicos {
         }
     }
 
-    public Medico consultarMedico(Long id) throws Exception {
+    public Medico consultarMedicoPorId(Long id) throws Exception {
         if (!medicoCOL.idValido(id)) {
             throw new ReceitaMedicaException("Id do médico inválido " + id + ".");
         }
@@ -158,19 +157,49 @@ public class UCMedicoServicos {
         }
     }
 
+    public Medico consultarMedicoPorCPF(String cpf) throws Exception {
+        if (!cpfCol.cpfValido(new CPF(cpf))) {
+            throw new ReceitaMedicaException("CPF do médico inválido " + cpf + ".");
+        }
+
+        try (Connection conexao = new ConexaoBD().getConexaoComBD()) {
+            conexao.setAutoCommit(false);
+
+            Medico medico;
+            try {
+                medico = medicoDAO.selecionarMedicoPorCPF(cpf, conexao);
+
+                if (medico != null) {
+                    medico.setTelefones(telefoneMedicoDAO.selecionarTelefonesMedico(medico.getId(), conexao));
+                    medico.setEmails(emailMedicoDAO.selecionarEmailsMedico(medico.getId(), conexao));
+                }
+
+                conexao.commit();
+                if(medico == null) {
+                    throw new EnderecoException("Não foi possível buscar o médico pelo cpf " + cpf + ".");
+                }
+            } catch (Exception e) {
+                conexao.rollback();
+                throw new EnderecoException("Não foi possível buscar o médico pelo cpf " + cpf + ".");
+            }
+
+            return medico;
+        }
+    }
+
     public static void main(String[] args) {
         try {
             UCMedicoServicos ucMedicoServicos = new UCMedicoServicos();
 
             // Criando um novo paciente
             Medico medico = new Medico();
-            medico.setNome("Bruna");
+            medico.setNome("André");
 
             // Criando CPF
-            CPF cpf = new CPF("13698745611");
+            CPF cpf = new CPF("13698745622");
             medico.setCpf(cpf);
 
-            CRM crm = new CRM("12345-PR");
+            CRM crm = new CRM("12344-PR");
             medico.setCrm(crm);
 
             // Criando Sexo
@@ -188,10 +217,10 @@ public class UCMedicoServicos {
 
             // Criando Telefone
             Telefone telefone = new Telefone();
-            telefone.setNumero("991456311");
+            telefone.setNumero("991457711");
 
             Telefone telefone1 = new Telefone();
-            telefone1.setNumero("991508766");
+            telefone1.setNumero("998908766");
 
             DDD ddd = new DDD();
             ddd.setNumeroDDD(41); // Supondo que esse DDD existe no banco
@@ -209,9 +238,9 @@ public class UCMedicoServicos {
 
             // Criando Email
             Email email = new Email();
-            email.setEmail("brunaaaaaa@email.com");
+            email.setEmail("braaaaaa@email.com");
             Email email1 = new Email();
-            email1.setEmail("brunateste@email.com");
+            email1.setEmail("brunatee@email.com");
 
             medico.setEmails(new ArrayList<>());
             medico.getEmails().add(email);
@@ -224,7 +253,7 @@ public class UCMedicoServicos {
                 System.out.println("Paciente cadastrado com sucesso! ID: " + medicoCadastrado.getId());
 
                 // Consultando Paciente
-                Medico medicoConsultado = ucMedicoServicos.consultarMedico(medicoCadastrado.getId());
+                Medico medicoConsultado = ucMedicoServicos.consultarMedicoPorCPF(medicoCadastrado.getCpf().getCpf());
 
                 if (medicoConsultado != null) {
                     System.out.println("Paciente consultado: " + medicoConsultado.getNome());
