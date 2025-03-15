@@ -119,7 +119,7 @@ public class UCPacienteServicos {
         }
     }
 
-    public Paciente consultarPaciente(Long id) throws Exception {
+    public Paciente consultarPacientePorId(Long id) throws Exception {
         if (!pacienteCOL.idValido(id)) {
             throw new ReceitaMedicaException("Id do paciente inválido " + id + ".");
         }
@@ -149,16 +149,46 @@ public class UCPacienteServicos {
         }
     }
 
+    public Paciente consultarPacientePorCpf(String cpf) throws Exception {
+        if (!cpfCol.cpfValido(new CPF(cpf))) {
+            throw new ReceitaMedicaException("CPF do paciente inválido " + cpf + ".");
+        }
+
+        try (Connection conexao = new ConexaoBD().getConexaoComBD()) {
+            conexao.setAutoCommit(false);
+
+            Paciente paciente;
+            try {
+                paciente = pacienteDAO.selecionarPacientePorCPF(cpf, conexao);
+
+                if (paciente != null) {
+                    paciente.setTelefones(telefonePacienteDAO.selecionarTelefonesPaciente(paciente.getId(), conexao));
+                    paciente.setEmails(emailPacienteDAO.selecionarEmailsPaciente(paciente.getId(), conexao));
+                }
+
+                conexao.commit();
+                if(paciente == null) {
+                    throw new EnderecoException("Não foi possível buscar o paciente pelo CPF " + cpf + ".");
+                }
+            } catch (Exception e) {
+                conexao.rollback();
+                throw new EnderecoException("Não foi possível buscar o paciente pelo CPF " + cpf + ".");
+            }
+
+            return paciente;
+        }
+    }
+
     public static void main(String[] args) {
         try {
             UCPacienteServicos pacienteServicos = new UCPacienteServicos();
 
             // Criando um novo paciente
             Paciente paciente = new Paciente();
-            paciente.setNome("Bruna");
+            paciente.setNome("BrunaZZZZ");
 
             // Criando CPF
-            CPF cpf = new CPF("13698745621");
+            CPF cpf = new CPF("13698743331");
             paciente.setCpf(cpf);
 
             // Criando Sexo
@@ -176,10 +206,10 @@ public class UCPacienteServicos {
 
             // Criando Telefone
             Telefone telefone = new Telefone();
-            telefone.setNumero("991456333");
+            telefone.setNumero("991766333");
 
             Telefone telefone1 = new Telefone();
-            telefone1.setNumero("991458766");
+            telefone1.setNumero("88158766");
 
             DDD ddd = new DDD();
             ddd.setNumeroDDD(41); // Supondo que esse DDD existe no banco
@@ -197,9 +227,9 @@ public class UCPacienteServicos {
 
             // Criando Email
             Email email = new Email();
-            email.setEmail("brunaaaaaaa@email.com");
+            email.setEmail("brunaa@email.com");
             Email email1 = new Email();
-            email1.setEmail("bruna.teste@email.com");
+            email1.setEmail("brte@email.com");
 
             paciente.setEmails(new ArrayList<>());
             paciente.getEmails().add(email);
@@ -212,7 +242,7 @@ public class UCPacienteServicos {
                 System.out.println("Paciente cadastrado com sucesso! ID: " + pacienteCadastrado.getId());
 
                 // Consultando Paciente
-                Paciente pacienteConsultado = pacienteServicos.consultarPaciente(pacienteCadastrado.getId());
+                Paciente pacienteConsultado = pacienteServicos.consultarPacientePorCpf(pacienteCadastrado.getCpf().getCpf());
 
                 if (pacienteConsultado != null) {
                     System.out.println("Paciente consultado: " + pacienteConsultado.getNome());
