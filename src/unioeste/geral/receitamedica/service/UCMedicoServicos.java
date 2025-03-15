@@ -196,10 +196,10 @@ public class UCMedicoServicos {
             medico.setNome("André");
 
             // Criando CPF
-            CPF cpf = new CPF("13698745622");
+            CPF cpf = new CPF("13696645622");
             medico.setCpf(cpf);
 
-            CRM crm = new CRM("12344-PR");
+            CRM crm = new CRM("44444-PR");
             medico.setCrm(crm);
 
             // Criando Sexo
@@ -217,10 +217,10 @@ public class UCMedicoServicos {
 
             // Criando Telefone
             Telefone telefone = new Telefone();
-            telefone.setNumero("991457711");
+            telefone.setNumero("991457741");
 
             Telefone telefone1 = new Telefone();
-            telefone1.setNumero("998908766");
+            telefone1.setNumero("991108766");
 
             DDD ddd = new DDD();
             ddd.setNumeroDDD(41); // Supondo que esse DDD existe no banco
@@ -238,9 +238,9 @@ public class UCMedicoServicos {
 
             // Criando Email
             Email email = new Email();
-            email.setEmail("braaaaaa@email.com");
+            email.setEmail("braaa@email.com");
             Email email1 = new Email();
-            email1.setEmail("brunatee@email.com");
+            email1.setEmail("bree@email.com");
 
             medico.setEmails(new ArrayList<>());
             medico.getEmails().add(email);
@@ -258,6 +258,7 @@ public class UCMedicoServicos {
                 if (medicoConsultado != null) {
                     System.out.println("Paciente consultado: " + medicoConsultado.getNome());
                     System.out.println("CPF: " + medicoConsultado.getCpf().getCpf());
+                    System.out.println("CRM: " + medicoConsultado.getCrm().getCrm());
                     System.out.println("Sexo: " + medicoConsultado.getSexo().getSigla());
                     System.out.println("Endereço: " + medicoConsultado.getEnderecoEspecifico().getEndereco().getId() +
                             ", Número: " + medicoConsultado.getEnderecoEspecifico().getNumero() +
