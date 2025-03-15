@@ -79,7 +79,7 @@ public class PacienteDAO {
                     cpf.setCpf(resultSet.getString("cpf_paciente"));
                     paciente.setCpf(cpf);
 
-                    paciente.setPrimeiroNome(resultSet.getString("nome_paciente").split(" ")[0]);
+                    paciente.setPrimeiroNome(resultSet.getString("nome_paciente"));
                     paciente.setNomeMeio("");
                     paciente.setUltimoNome("");
 
@@ -157,7 +157,7 @@ public class PacienteDAO {
                     cpf.setCpf(resultSet.getString("cpf_paciente"));
                     paciente.setCpf(cpf);
 
-                    paciente.setPrimeiroNome(resultSet.getString("nome_paciente").split(" ")[0]);
+                    paciente.setPrimeiroNome(resultSet.getString("nome_paciente"));
                     paciente.setNomeMeio("");
                     paciente.setUltimoNome("");
 
