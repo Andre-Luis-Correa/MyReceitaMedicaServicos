@@ -2,6 +2,8 @@ package unioeste.geral.receitamedica.col;
 
 import unioeste.geral.receitamedica.bo.receitamedica.ReceitaMedica;
 
+import java.time.LocalDate;
+
 public class ReceitaMedicaCOL {
 
     public boolean receitaMedicaValida(ReceitaMedica receitaMedica) {

@@ -57,4 +57,29 @@ public class MedicamentoDAO {
 
         return medicamentos;
     }
+
+    public Medicamento selecionarMedicamentoPorId(Long id, Connection conexao) throws SQLException {
+        String sql = """
+        SELECT m.nome_medicamento
+        FROM medicamento m
+        WHERE m.id_medicamento = ?
+        ORDER BY m.nome_medicamento;
+        """;
+
+        Medicamento medicamento = null;
+
+        try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    medicamento = new Medicamento();
+                    medicamento.setId(resultSet.getLong("id_medicamento"));
+                    medicamento.setNome(resultSet.getString("nome_medicamento"));
+                }
+            }
+        }
+
+        return medicamento;
+    }
 }

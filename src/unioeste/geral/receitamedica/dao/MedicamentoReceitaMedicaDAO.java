@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MedicamentoReceitaMedicaDAO {
 
-    public void inserirReceitaMedica(ReceitaMedica receitaMedica, List<MedicamentoReceitaMedica> medicamentoReceitaMedicaList, Connection conexao) throws SQLException {
+    public void inserirMedicamentoReceitaMedica(ReceitaMedica receitaMedica, List<MedicamentoReceitaMedica> medicamentoReceitaMedicaList, Connection conexao) throws SQLException {
         String sqlMedicamento = "INSERT INTO receita_medica_medicamento (id_medicamento, numero_receita, data_inicio_medicamento, data_termino_medicamento, posologia) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
