@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MedicamentoReceitaMedicaCOL {
 
-    public boolean isMedicamentoReceitaMedicaValidos(MedicamentoReceitaMedica medicamentoReceitaMedica) {
+    public boolean isMedicamentoReceitaMedicaValido(MedicamentoReceitaMedica medicamentoReceitaMedica) {
         LocalDate hoje = LocalDate.now();
         LocalDate dataInicio = medicamentoReceitaMedica.getDataInicio();
         LocalDate dataFim = medicamentoReceitaMedica.getDataFim();
@@ -18,10 +18,10 @@ public class MedicamentoReceitaMedicaCOL {
             !dataInicio.isBefore(hoje) &&
             !dataFim.isBefore(dataInicio) &&
             medicamentoReceitaMedica.getPosologia() != null &&
-            medicamentoReceitaMedica.getPosologia().trim().isEmpty();
+            !medicamentoReceitaMedica.getPosologia().trim().isEmpty();
     }
 
-    public boolean isMedicamentoReceitaMedicaValidos(List<MedicamentoReceitaMedica> medicamentoReceitaMedicas) {
+    public boolean isMedicamentoReceitaMedicaValido(List<MedicamentoReceitaMedica> medicamentoReceitaMedicas) {
         return medicamentoReceitaMedicas != null && !medicamentoReceitaMedicas.isEmpty();
     }
 }

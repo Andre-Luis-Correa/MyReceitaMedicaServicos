@@ -15,4 +15,8 @@ public class ReceitaMedicaCOL {
                 receitaMedica.getMedicamentoReceitaMedicas() != null &&
                 !receitaMedica.getMedicamentoReceitaMedicas().isEmpty();
     }
+
+    public boolean numeroValido(Integer numero) {
+        return numero != null;
+    }
 }

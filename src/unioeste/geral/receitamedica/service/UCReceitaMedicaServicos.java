@@ -1,6 +1,7 @@
 package unioeste.geral.receitamedica.service;
 
 import unioeste.apoio.bd.ConexaoBD;
+import unioeste.geral.endereco.exception.EnderecoException;
 import unioeste.geral.receitamedica.bo.diagnosticocid.DiagnosticoCID;
 import unioeste.geral.receitamedica.bo.medicamento.Medicamento;
 import unioeste.geral.receitamedica.bo.medicamentoreceitamedica.MedicamentoReceitaMedica;
@@ -51,6 +52,7 @@ public class UCReceitaMedicaServicos {
         if(!receitaMedicaCOL.receitaMedicaValida(receitaMedica)) throw new ReceitaMedicaException("Receita Médica inválida");
 
         try(Connection conexao = new ConexaoBD().getConexaoComBD()) {
+            conexao.setAutoCommit(false);
 
             if(medicoDAO.selecionarMedicoPorId(receitaMedica.getMedico().getId(), conexao) == null) {
                 throw new ReceitaMedicaException("Médico não existe com id " + receitaMedica.getMedico().getId());
@@ -62,7 +64,7 @@ public class UCReceitaMedicaServicos {
                 throw new ReceitaMedicaException("Diagnóstico CID não existe com código " + receitaMedica.getDiagnosticoCID().getCodigo());
             }
 
-            if(medicamentoReceitaMedicaCOL.isMedicamentoReceitaMedicaValidos(receitaMedica.getMedicamentoReceitaMedicas())) {
+            if(!medicamentoReceitaMedicaCOL.isMedicamentoReceitaMedicaValido(receitaMedica.getMedicamentoReceitaMedicas())) {
                 throw new ReceitaMedicaException("itens da receita médica inválidos!");
             }
 
@@ -70,7 +72,7 @@ public class UCReceitaMedicaServicos {
                 if(medicamentoDAO.selecionarMedicamentoPorId(medicamentoReceitaMedica.getMedicamento().getId(), conexao) == null) {
                     throw new ReceitaMedicaException("Medicamento não existe com id " + medicamentoReceitaMedica.getMedicamento().getId());
                 }
-                if(!medicamentoReceitaMedicaCOL.isMedicamentoReceitaMedicaValidos(medicamentoReceitaMedica)) {
+                if(!medicamentoReceitaMedicaCOL.isMedicamentoReceitaMedicaValido(medicamentoReceitaMedica)) {
                     throw new ReceitaMedicaException("Item da receita médica inválido!");
                 }
             }
@@ -93,6 +95,30 @@ public class UCReceitaMedicaServicos {
         }
     }
 
+    public ReceitaMedica consultarReceitaMedicaPorNumero(Integer numero) throws Exception {
+        if(!receitaMedicaCOL.numeroValido(numero)) throw new ReceitaMedicaException("Número da receita inválido.");
+
+        try (Connection conexao = new ConexaoBD().getConexaoComBD()) {
+            conexao.setAutoCommit(false);
+
+            ReceitaMedica receitaMedica;
+
+            try {
+                receitaMedica = receitaMedicaDAO.selecionarReceitaMedicaPorNumero(numero, conexao);
+
+                if(receitaMedica != null) {
+                    receitaMedica.setMedicamentoReceitaMedicas(medicamentoReceitaMedicaDAO.obterMedicamentosPorReceita(receitaMedica.getNumero(), conexao));
+                }
+                conexao.commit();
+            } catch (Exception e) {
+                conexao.rollback();
+                throw new EnderecoException("Não foi possível buscar a receita médica pelo número " + numero + ".");
+            }
+
+            return receitaMedica;
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         UCReceitaMedicaServicos ucReceitaMedicaServicos = new UCReceitaMedicaServicos();
 
@@ -109,8 +135,8 @@ public class UCReceitaMedicaServicos {
         medicamento.setId(1L);
 
         MedicamentoReceitaMedica medicamentoReceitaMedica = new MedicamentoReceitaMedica();
-        medicamentoReceitaMedica.setDataInicio(LocalDate.now());
-        medicamentoReceitaMedica.setDataFim(LocalDate.now().plusDays(1));
+        medicamentoReceitaMedica.setDataInicio(LocalDate.now().plusDays(1));
+        medicamentoReceitaMedica.setDataFim(LocalDate.now().plusDays(3));
         medicamentoReceitaMedica.setMedicamento(medicamento);
         medicamentoReceitaMedica.setPosologia("Uma vez ao dia no almoço.");
 
@@ -126,7 +152,7 @@ public class UCReceitaMedicaServicos {
 
         receitaMedica.setDataEmissao(LocalDate.now());
 
-        ReceitaMedica receitaMedicaCadastrada = ucReceitaMedicaServicos.cadastrarReceitaMedica(receitaMedica);
+        ReceitaMedica receitaMedicaCadastrada = ucReceitaMedicaServicos.consultarReceitaMedicaPorNumero(1);
 
         if(receitaMedicaCadastrada != null) {
             System.out.println("Receita médica: " + receitaMedicaCadastrada.getNumero());

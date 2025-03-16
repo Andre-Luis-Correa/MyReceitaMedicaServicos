@@ -18,19 +18,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class ReceitaMedicaDAO {
 
     public ReceitaMedica inserirReceitaMedica(ReceitaMedica receitaMedica, Connection conexao) throws SQLException {
-        String sql = "INSERT INTO receita_medica (numero_receita, data_emissao, id_medico, codigo_cid_diagnostico, id_paciente) " +
-                "VALUES (?, ?, ?, ?, ?) RETURNING numero_receita";
+        String sql = "INSERT INTO receita_medica (data_emissao, id_medico, codigo_cid_diagnostico, id_paciente) " +
+                "VALUES (?, ?, ?, ?) RETURNING numero_receita";
 
         try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
-            preparedStatement.setInt(1, receitaMedica.getNumero());
-            preparedStatement.setDate(2, java.sql.Date.valueOf(receitaMedica.getDataEmissao()));
-            preparedStatement.setLong(3, receitaMedica.getMedico().getId());
-            preparedStatement.setString(4, receitaMedica.getDiagnosticoCID().getCodigo());
-            preparedStatement.setLong(5, receitaMedica.getPaciente().getId());
+            preparedStatement.setDate(1, java.sql.Date.valueOf(receitaMedica.getDataEmissao()));
+            preparedStatement.setLong(2, receitaMedica.getMedico().getId());
+            preparedStatement.setString(3, receitaMedica.getDiagnosticoCID().getCodigo());
+            preparedStatement.setLong(4, receitaMedica.getPaciente().getId());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -48,49 +48,70 @@ public class ReceitaMedicaDAO {
     }
 
     public ReceitaMedica selecionarReceitaMedicaPorNumero(int numeroReceita, Connection conexao) throws SQLException {
-        String sql =
-                "SELECT " +
-                        "    rm.numero_receita, " +
-                        "    rm.data_emissao, " +
-                        "    d.codigo_cid_diagnostico, d.descricao_diagnostico_cid, " +
+        String sql = """
+                SELECT
+                    rm.numero_receita,
+                    rm.data_emissao,
+                    d.codigo_cid_diagnostico,
+                    d.descricao_diagnostico_cid,
 
-                        // Campos do médico
-                        "    m.id_medico, m.nome AS nome_medico, m.cpf_medico, m.crm_medico, " +
-                        "    m.complemento_endereco AS complemento_endereco_medico, m.numero_endereco AS numero_endereco_medico, " +
-                        "    sm.sigla_sexo AS sigla_sexo_medico, sm.nome AS nome_sexo_medico, " +
-                        "    em.id_endereco AS id_endereco_medico, em.cep AS cep_medico, " +
-                        "    lom.id_logradouro AS id_logradouro_medico, lom.nome AS nome_logradouro_medico, " +
-                        "    tlm.sigla_tipo_logradouro AS sigla_tipo_logradouro_medico, tlm.nome_tipo_logradouro AS nome_tipo_logradouro_medico, " +
-                        "    cm.id_cidade AS id_cidade_medico, cm.nome AS nome_cidade_medico, " +
-                        "    ufm.sigla_uf AS sigla_uf_medico, ufm.nome_uf AS nome_uf_medico, " +
+                    -- Campos do médico
+                    m.id_medico,
+                    m.nome AS nome_medico,
+                    m.cpf_medico,
+                    m.crm_medico,
+                    m.complemento_endereco AS complemento_endereco_medico,
+                    m.numero_endereco AS numero_endereco_medico,
+                    sm.sigla_sexo AS sigla_sexo_medico,
+                    sm.nome AS nome_sexo_medico,
+                    em.id_endereco AS id_endereco_medico,
+                    em.cep AS cep_medico,
+                    lom.id_logradouro AS id_logradouro_medico,
+                    lom.nome AS nome_logradouro_medico,
+                    tlm.sigla_tipo_logradouro AS sigla_tipo_logradouro_medico,
+                    tlm.nome_tipo_logradouro AS nome_tipo_logradouro_medico,
+                    cm.id_cidade AS id_cidade_medico,
+                    cm.nome AS nome_cidade_medico,
+                    ufm.sigla_uf AS sigla_uf_medico,
+                    ufm.nome_uf AS nome_uf_medico,
 
-                        // Campos do paciente
-                        "    p.id_paciente, p.nome_paciente, p.cpf_paciente, " +
-                        "    p.complemento_endereco AS complemento_endereco_paciente, p.numero_endereco AS numero_endereco_paciente, " +
-                        "    sp.sigla_sexo AS sigla_sexo_paciente, sp.nome AS nome_sexo_paciente, " +
-                        "    ep.id_endereco AS id_endereco_paciente, ep.cep AS cep_paciente, " +
-                        "    lop.id_logradouro AS id_logradouro_paciente, lop.nome AS nome_logradouro_paciente, " +
-                        "    tlp.sigla_tipo_logradouro AS sigla_tipo_logradouro_paciente, tlp.nome_tipo_logradouro_paciente, " +
-                        "    cp.id_cidade AS id_cidade_paciente, cp.nome AS nome_cidade_paciente, " +
-                        "    ufp.sigla_uf AS sigla_uf_paciente, ufp.nome_uf AS nome_uf_paciente " +
+                    -- Campos do paciente
+                    p.id_paciente,
+                    p.nome_paciente,
+                    p.cpf_paciente,
+                    p.complemento_endereco AS complemento_endereco_paciente,
+                    p.numero_endereco AS numero_endereco_paciente,
+                    sp.sigla_sexo AS sigla_sexo_paciente,
+                    sp.nome AS nome_sexo_paciente,
+                    ep.id_endereco AS id_endereco_paciente,
+                    ep.cep AS cep_paciente,
+                    lop.id_logradouro AS id_logradouro_paciente,
+                    lop.nome AS nome_logradouro_paciente,
+                    tlp.sigla_tipo_logradouro AS sigla_tipo_logradouro_paciente,
+                    tlp.nome_tipo_logradouro AS nome_tipo_logradouro_paciente,
+                    cp.id_cidade AS id_cidade_paciente,
+                    cp.nome AS nome_cidade_paciente,
+                    ufp.sigla_uf AS sigla_uf_paciente,
+                    ufp.nome_uf AS nome_uf_paciente
 
-                        "FROM receita_medica rm " +
-                        "JOIN diagnostico_cid d ON rm.codigo_cid_diagnostico = d.codigo_cid_diagnostico " +
-                        "JOIN medico m ON rm.id_medico = m.id_medico " +
-                        "JOIN sexo sm ON m.sigla_sexo = sm.sigla_sexo " +
-                        "JOIN endereco em ON m.id_endereco = em.id_endereco " +
-                        "JOIN logradouro lom ON em.id_logradouro = lom.id_logradouro " +
-                        "JOIN tipo_logradouro tlm ON lom.sigla_tipo_logradouro = tlm.sigla_tipo_logradouro " +
-                        "JOIN cidade cm ON em.id_cidade = cm.id_cidade " +
-                        "JOIN unidade_federativa ufm ON cm.sigla_uf = ufm.sigla_uf " +
-                        "JOIN paciente p ON rm.id_paciente = p.id_paciente " +
-                        "JOIN sexo sp ON p.sigla_sexo = sp.sigla_sexo " +
-                        "JOIN endereco ep ON p.id_endereco = ep.id_endereco " +
-                        "JOIN logradouro lop ON ep.id_logradouro = lop.id_logradouro " +
-                        "JOIN tipo_logradouro tlp ON lop.sigla_tipo_logradouro = tlp.sigla_tipo_logradouro " +
-                        "JOIN cidade cp ON ep.id_cidade = cp.id_cidade " +
-                        "JOIN unidade_federativa ufp ON cp.sigla_uf = ufp.sigla_uf " +
-                        "WHERE rm.numero_receita = ?";
+                FROM receita_medica rm
+                JOIN diagnostico_cid d ON rm.codigo_cid_diagnostico = d.codigo_cid_diagnostico
+                JOIN medico m ON rm.id_medico = m.id_medico
+                JOIN sexo sm ON m.sigla_sexo = sm.sigla_sexo
+                JOIN endereco em ON m.id_endereco = em.id_endereco
+                JOIN logradouro lom ON em.id_logradouro = lom.id_logradouro
+                JOIN tipo_logradouro tlm ON lom.sigla_tipo_logradouro = tlm.sigla_tipo_logradouro
+                JOIN cidade cm ON em.id_cidade = cm.id_cidade
+                JOIN unidade_federativa ufm ON cm.sigla_uf = ufm.sigla_uf
+                JOIN paciente p ON rm.id_paciente = p.id_paciente
+                JOIN sexo sp ON p.sigla_sexo = sp.sigla_sexo
+                JOIN endereco ep ON p.id_endereco = ep.id_endereco
+                JOIN logradouro lop ON ep.id_logradouro = lop.id_logradouro
+                JOIN tipo_logradouro tlp ON lop.sigla_tipo_logradouro = tlp.sigla_tipo_logradouro
+                JOIN cidade cp ON ep.id_cidade = cp.id_cidade
+                JOIN unidade_federativa ufp ON cp.sigla_uf = ufp.sigla_uf
+                WHERE rm.numero_receita = ?
+                        """;
 
         try (PreparedStatement preparedStatement = conexao.prepareStatement(sql)) {
             preparedStatement.setInt(1, numeroReceita);

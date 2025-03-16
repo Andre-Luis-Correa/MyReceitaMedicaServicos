@@ -60,7 +60,7 @@ public class MedicamentoDAO {
 
     public Medicamento selecionarMedicamentoPorId(Long id, Connection conexao) throws SQLException {
         String sql = """
-        SELECT m.nome_medicamento
+        SELECT m.nome_medicamento, m.id_medicamento
         FROM medicamento m
         WHERE m.id_medicamento = ?
         ORDER BY m.nome_medicamento;
