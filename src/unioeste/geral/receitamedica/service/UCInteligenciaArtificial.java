@@ -1,5 +1,6 @@
 package unioeste.geral.receitamedica.service;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import unioeste.geral.receitamedica.utils.RespostaInteligenciaArtificial;
@@ -68,7 +69,7 @@ public class UCInteligenciaArtificial {
                     }
                   }
                 }
-                """.formatted(userMessage);
+                """.formatted(StringEscapeUtils.escapeJson(userMessage));
     }
 
 
@@ -108,13 +109,11 @@ public class UCInteligenciaArtificial {
         return new JSONObject(nestedJsonString);
     }
 
-    public RespostaInteligenciaArtificial generateQuestionsForQuestionnaire(String prompt)
-            throws IOException, InterruptedException {
+    public RespostaInteligenciaArtificial obterRespostaDaInteligenciaArtifical(String prompt) throws IOException, InterruptedException {
 
         String requestBody = buildJsonBody(prompt);
 
-        String geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="
-                + geminiApiKey;
+        String geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(geminiUrl))
@@ -145,7 +144,7 @@ public class UCInteligenciaArtificial {
     public static void main(String[] args) {
         UCInteligenciaArtificial ucIA = new UCInteligenciaArtificial();
         try {
-            RespostaInteligenciaArtificial resultado = ucIA.generateQuestionsForQuestionnaire("mostreme os dados do paciente com o id 4 eu acho?");
+            RespostaInteligenciaArtificial resultado = ucIA.obterRespostaDaInteligenciaArtifical("mostreme os dados do paciente com o id 890 eu acho?");
 
             System.out.println("Intenção retornada: " + resultado.getIntencao());
             System.out.println("ID retornado: " + resultado.getId());
