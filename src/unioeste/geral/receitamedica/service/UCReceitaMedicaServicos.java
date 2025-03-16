@@ -119,6 +119,23 @@ public class UCReceitaMedicaServicos {
         }
     }
 
+    public List<ReceitaMedica> obterListaDeReceitasMedicas() throws Exception {
+        List<ReceitaMedica> receitaMedicas = new ArrayList<>();
+
+        try (Connection conexao = new ConexaoBD().getConexaoComBD()) {
+            conexao.setAutoCommit(false);
+
+            try {
+                receitaMedicas = receitaMedicaDAO.selecionarTodasReceitasMedicas(conexao);
+                conexao.commit();
+            } catch (Exception e) {
+                conexao.rollback();
+            }
+        }
+
+        return receitaMedicas;
+    }
+
     public static void main(String[] args) throws Exception {
         UCReceitaMedicaServicos ucReceitaMedicaServicos = new UCReceitaMedicaServicos();
 
@@ -171,5 +188,7 @@ public class UCReceitaMedicaServicos {
         } else {
             System.out.println("NULO\n");
         }
+
+        System.out.println(ucReceitaMedicaServicos.obterListaDeReceitasMedicas());
     }
 }
